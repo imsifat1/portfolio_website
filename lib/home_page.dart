@@ -6,6 +6,7 @@ import 'package:portfolio_website/responsive.dart';
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
   double dpSize = 100;
+  RxInt switchNumber = 1.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -170,6 +171,7 @@ class HomePage extends StatelessWidget {
           Center(
             child: GestureDetector(
               onTap: (){
+                switchNumber.value = 1;
                 switchOn.value = false;
                 print(switchOn);
               },
@@ -184,6 +186,8 @@ class HomePage extends StatelessWidget {
           Center(
             child: GestureDetector(
               onTap: (){
+                switchNumber.value = 2;
+
                 switchOn.value = true;
               },
               child: Container(
@@ -209,15 +213,100 @@ class HomePage extends StatelessWidget {
       'https://fsa2-assets.imgix.net/assets/laptop-coding-terminal.jpg?auto=compress%2Cformat&crop=focalpoint&domain=fsa2-assets.imgix.net&fit=crop&fp-x=0.5&fp-y=0.5&ixlib=php-3.3.0&w=1280',
       'https://www.simplilearn.com/ice9/free_resources_article_thumb/Six_Old_Programming_Languages_That_Are_Going_Out_of_Style.jpg'
     ];
+    return Obx(()=> switchNumber.value == 1? projectSegment(context, size, imageUrl) :  skillSegment(context, size));
+  }
+  
+  Container projectSegment(BuildContext context, Size size, List<String> imageUrl) {
     return Container(
-      width: isMobile(context) ?  size.width : size.width * 0.7,
-      child: GridView.builder(
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: isMobile(context) ? 2 : 3, crossAxisSpacing: 10, mainAxisSpacing: 10), 
-        itemCount: imageUrl.length,
-        itemBuilder: (context, index){
-          return ClipRRect(borderRadius: BorderRadius.circular(10), child: CachedNetworkImage(imageUrl: imageUrl[index], fit: BoxFit.cover,));
-        }),
+            width: isMobile(context) ? size.width : size.width * 0.7,
+            child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isMobile(context) ? 2 : 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10),
+                itemCount: imageUrl.length,
+                itemBuilder: (context, index) {
+                  return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl[index],
+                        fit: BoxFit.cover,
+                      ));
+                }),
+          );
+  }
+
+  Container skillSegment(BuildContext context, Size size) {
+    return Container(
+            width: isMobile(context) ? size.width : size.width * 0.7,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  
+                  children: [
+                  Text('Mobile App Development'),
+                  SizedBox(height: 20),
+                  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      
+                  skillItem('Flutter', 'Intermediate'),
+                  SizedBox(height: 10),
+
+                  skillItem('iOS', 'Intermediate'),
+                    ],
+                  ),
+                  Row(children: [
+
+                  skillItem('Android', 'Beginner'),
+                  SizedBox(height: 10),
+                  skillItem('Game', 'Beginner')
+                  ],),
+                ]),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  Text('Programming Skill'),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+
+                  skillItem('C++', 'Intermediate'),
+                  SizedBox(height: 10),
+                  skillItem('Java', 'Intermediate'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+
+                  skillItem('Dart', 'Intermediate'),
+                  SizedBox(height: 10),
+                  skillItem('Swift', 'Intermediate'),
+                    ],
+                  ),
+                ]),
+              ],
+            ));
+  }
+
+  skillItem(String skillName, expertLvl) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        
+          Icon(Icons.check_circle_outline_rounded),
+        Column(
+          children: [
+            Text(skillName, style: TextStyle(fontSize: 17),),
+        Text(expertLvl, style: TextStyle(fontSize: 12, color: Colors.grey),),
+          ],
+        ),
+        
+      ],
     );
   }
 }
