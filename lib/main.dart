@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:portfolio_website/home_page.dart';
+
 void main() {
   runApp(GetMaterialApp(
-    theme: ThemeData(
+      theme: ThemeData(
           brightness: Brightness.light,
           textTheme: const TextTheme(
             bodyText1: TextStyle(),
@@ -14,5 +15,5 @@ void main() {
           )),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.light,
-    home: HomePage()));
+      home: HomePage()));
 }
