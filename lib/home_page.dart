@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:portfolio_website/responsive.dart';
+import 'package:portfolio_website/theme/bloc/theme_switch_bloc.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -25,23 +27,26 @@ class HomePage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Obx(
-                  () => Align(
-                    alignment: Alignment.topRight,
-                    child: IconButton(
-                      icon: Icon(darkMode.value == false
-                          ? Icons.sunny
-                          : Icons.wb_sunny_outlined),
-                      onPressed: () {
-                        if (darkMode.value == false) {
-                          darkMode.value = true;
-                          Get.changeTheme(ThemeData.dark());
-                        } else {
-                          darkMode.value = false;
-                          Get.changeTheme(ThemeData.light());
-                        }
-                      },
-                    ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: BlocBuilder<ThemeSwitchBloc, ThemeSwitchState>(
+                    builder: (context, state) {
+                      return Switch(
+                        value: ((state as ThemeSwitchToggleState).isDark),
+                        onChanged: (isDark) {
+                          // if (darkMode.value == false) {
+                          //   darkMode.value = true;
+                          //   Get.changeTheme(ThemeData.dark());
+                          // } else {
+                          //   darkMode.value = false;
+                          //   Get.changeTheme(ThemeData.light());
+                          // }
+                          context
+                              .read<ThemeSwitchBloc>()
+                              .add(ThemeSwitchToggleEvent(isDark));
+                        },
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(
@@ -210,59 +215,56 @@ class HomePage extends StatelessWidget {
 
   customSwitch(BuildContext context) {
     RxBool switchOn = false.obs;
-    return Obx(
-      () => Container(
-        height: 50,
-        width: MediaQuery.of(context).size.width * 0.3,
-        decoration: BoxDecoration(
-            color: Colors.grey.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10)),
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                switchNumber.value = 1;
-                switchOn.value = false;
-                print(switchOn);
-              },
-              child: Container(
-                height: 40,
-                width: MediaQuery.of(context).size.width * 0.45 * 0.3,
-                decoration: BoxDecoration(
-                    color:
-                        switchOn == false ? Colors.white : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                    child: Text(
-                  'Skills',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
-                )),
-              ),
+    return Container(
+      height: 50,
+      width: MediaQuery.of(context).size.width * 0.3,
+      decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(10)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        Center(
+          child: GestureDetector(
+            onTap: () {
+              switchNumber.value = 1;
+              switchOn.value = false;
+              print(switchOn);
+            },
+            child: Container(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.45 * 0.3,
+              decoration: BoxDecoration(
+                  color: switchOn == false ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(10)),
+              child: Center(
+                  child: Text(
+                'Skills',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              )),
             ),
           ),
-          Center(
-            child: GestureDetector(
-              onTap: () {
-                switchNumber.value = 2;
+        ),
+        Center(
+          child: GestureDetector(
+            onTap: () {
+              switchNumber.value = 2;
 
-                switchOn.value = true;
-              },
-              child: Container(
-                height: 40,
-                width: MediaQuery.of(context).size.width * 0.45 * 0.3,
-                decoration: BoxDecoration(
-                    color: switchOn == true ? Colors.white : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Center(
-                    child: Text('Projects',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black))),
-              ),
+              switchOn.value = true;
+            },
+            child: Container(
+              height: 40,
+              width: MediaQuery.of(context).size.width * 0.45 * 0.3,
+              decoration: BoxDecoration(
+                  color: switchOn == true ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(10)),
+              child: Center(
+                  child: Text('Projects',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black))),
             ),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 
@@ -276,9 +278,9 @@ class HomePage extends StatelessWidget {
       'https://fsa2-assets.imgix.net/assets/laptop-coding-terminal.jpg?auto=compress%2Cformat&crop=focalpoint&domain=fsa2-assets.imgix.net&fit=crop&fp-x=0.5&fp-y=0.5&ixlib=php-3.3.0&w=1280',
       'https://www.simplilearn.com/ice9/free_resources_article_thumb/Six_Old_Programming_Languages_That_Are_Going_Out_of_Style.jpg'
     ];
-    return Obx(() => switchNumber.value == 1
+    return switchNumber.value == 1
         ? projectSegment(context, size, imageUrl)
-        : skillSegment(context, size));
+        : skillSegment(context, size);
   }
 
   Container projectSegment(
